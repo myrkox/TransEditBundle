@@ -1,0 +1,46 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block pageHeader %}
+    Add locale
+{% endblock %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-md-2">
+            {{ form_label(form.localeKey) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_widget(form.localeKey) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">&nbsp;</div>
+        <div class="col-md-4">
+            {{ form_errors(form.localeKey) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            {{ form_label(form.localeName) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_widget(form.localeName) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">&nbsp;</div>
+        <div class="col-md-4">
+            {{ form_errors(form.localeName) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

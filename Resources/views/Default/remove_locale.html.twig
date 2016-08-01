@@ -1,0 +1,35 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block pageHeader %}
+    Remove locale
+{% endblock %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-md-2">
+            {{ form_label(form.locale) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_widget(form.locale) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_end(form) }}
+        </div>
+    </div>
+    {% if locales|length == 1 %}
+        <div class="row">
+            <div class="col-md-6 centered">
+                <div class="alert alert-danger">
+                    Can't remove last locale!
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

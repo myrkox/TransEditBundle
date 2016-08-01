@@ -1,0 +1,26 @@
+{
+    "defaults": {
+        "language-select.language.ua": "Українська",
+        "language-select.language.ru": "Русский",
+        "language-select.language.en": "English",
+        "language-select.language.by": "Bel"
+    },
+    "locales": {
+        "ua": {
+            "first.key": "aaa1",
+            "second.key": "b1"
+        },
+        "ru": {
+            "first.key": "aaa2",
+            "second.key": "b2"
+        },
+        "en": {
+            "first.key": "aaa3",
+            "second.key": "b3"
+        },
+        "by": {
+            "first.key": "",
+            "second.key": ""
+        }
+    }
+}

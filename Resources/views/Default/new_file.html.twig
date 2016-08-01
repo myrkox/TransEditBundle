@@ -1,0 +1,27 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block pageHeader %}
+    Create new file
+{% endblock %}
+
+{% block content %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-md-2">
+            {{ form_label(form.locales) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_errors(form.locales) }}
+            {{ form_widget(form.locales) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

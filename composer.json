@@ -1,0 +1,28 @@
+{
+  "name": "shas/translations-editor",
+  "description": "Editing file with translations",
+  "type": "symfony-bundle",
+  "authors": [
+    {
+      "name": "Andrey Shokotko",
+      "email": "shas@bigmir.net"
+    }
+  ],
+  "license": [
+    "MIT"
+  ],
+  "require": {
+    "php": ">=5.4",
+    "symfony/framework-bundle": "~2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Shas\\TransEditBundle\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
+}

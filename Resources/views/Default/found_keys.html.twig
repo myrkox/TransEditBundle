@@ -1,0 +1,72 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .edit-key {
+            margin-left: 5px;
+            margin-top: -3px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("button.edit-key").click(function (e) {
+                e.preventDefault();
+                var newKeyUrl = "{{ path('trans_edit_new_key') }}";
+
+                var key = $(this).attr('key');
+                window.location.replace(newKeyUrl + '/' + key);
+            });
+        })
+    </script>
+{% endblock %}
+
+{% block pageHeader %}
+    Found key
+{% endblock %}
+
+{% block content %}
+    {% if foundKeys|length == 0 %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="alert alert-danger">
+                    Keys not found!
+                </div>
+            </div>
+        </div>
+    {% else %}
+        {% for key, trans in foundKeys %}
+            <div class="row">
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-default btn-xs edit-key"
+                            key="{{ key }}">Edit
+                    </button>
+                </div>
+                <div class="col-md-11">
+                    <div class="spoiler-wrapper">
+                        <div class="spoiler folded">
+                            <a href="javascript:void(0);"><span class="key">{{ key }}</span></a>
+                        </div>
+                        <div class="spoiler-text">
+                            <ul>
+                                {% for key, value in trans %}
+                                    <li>
+                                        <span class="key">{{ key }}:</span><span class="value">{{ value }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

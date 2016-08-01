@@ -1,0 +1,22 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block pageHeader %}
+    Statistic page
+{% endblock %}
+
+{% block content %}
+    <p class="subsection">Languages:</p>
+    <ul>
+        <li><span class="key">Quantity of languages:</span><span class="value">{{ statistic.languagesCount }}</span></li>
+        <li><span class="key">Languages:</span><span class="value">{{ statistic.languagesInString }}</span></li>
+    </ul>
+    <p class="subsection">Quantity keys by locales:</p>
+    <ul>
+        {% for key, value in statistic.keysCountByLocales %}
+            <li><span class="key">{{ key }}:</span><span class="quantity">{{ value }}</span></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

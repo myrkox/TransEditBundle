@@ -1,0 +1,57 @@
+trans_edit_home:
+    path:     /
+    defaults: { _controller: TransEditBundle:Default:index }
+
+trans_edit_statistic:
+    path:     /statistic
+    defaults: { _controller: TransEditBundle:Default:index }
+
+trans_edit_all_keys:
+    path:     /all_keys
+    defaults: { _controller: TransEditBundle:Default:allKeys }
+
+trans_edit_group_keys:
+    path:     /groups_keys
+    defaults: { _controller: TransEditBundle:Default:groupsKeys }
+
+trans_edit_new_key:
+    path:     /new_key
+    defaults: { _controller: TransEditBundle:Default:newKey }
+
+trans_edit_new_key_with_value:
+    path:     /new_key/{key}
+    defaults: { _controller: TransEditBundle:Default:newKey }
+    requirements:
+        _method:  GET
+
+trans_edit_search_keys:
+    path:     /search_keys
+    defaults: { _controller: TransEditBundle:Default:searchKeys }
+
+trans_edit_get_all_keys_by_ajax:
+    path:     /ajax_all_keys
+    defaults: { _controller: TransEditBundle:Default:getAllKeysByAjax }
+
+trans_edit_save_key_data_by_ajax:
+    path:     /ajax_save_key_data
+    defaults: { _controller: TransEditBundle:Default:saveKeyDataByAjax }
+
+trans_edit_find_key_data_by_ajax:
+    path:     /ajax_find_key_data
+    defaults: { _controller: TransEditBundle:Default:findKeyDataByAjax }
+
+trans_edit_create_new_file:
+    path:     /create_new_file
+    defaults: { _controller: TransEditBundle:Default:createNewFile }
+
+trans_edit_add_locale:
+    path:     /add_locale
+    defaults: { _controller: TransEditBundle:Default:addLocale }
+
+trans_edit_remove_locale:
+    path:     /remove_locale
+    defaults: { _controller: TransEditBundle:Default:removeLocale }
+
+trans_edit_global_error:
+    path:     /global_error
+    defaults: { _controller: TransEditBundle:Default:globalError }

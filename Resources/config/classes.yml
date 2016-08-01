@@ -1,0 +1,5 @@
+parameters:
+    shas.translation_content_manager.class: Shas\TransEditBundle\Entity\EntityManager\TranslationContentManager
+    shas.translation_content_processing.class: Shas\TransEditBundle\Services\TranslationContentProcessing
+    shas.file_manager.class: Shas\TransEditBundle\Services\FileManager
+    shas.validator.is_locale_exists.class: Shas\TransEditBundle\Validator\IsLocaleExistsValidator

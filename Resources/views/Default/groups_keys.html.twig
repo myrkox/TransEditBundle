@@ -1,0 +1,109 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .edit-key {
+            margin-left: 5px;
+            margin-top: -3px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("button.edit-key").click(function (e) {
+                e.preventDefault();
+                var newKeyUrl = "{{ path('trans_edit_new_key') }}";
+
+                var key = $(this).attr('key');
+                window.location.replace(newKeyUrl + '/' + key);
+            });
+        })
+    </script>
+{% endblock %}
+
+{% block pageHeader %}
+    All keys by groups
+{% endblock %}
+{% block content %}
+
+        {% for group in groupsKeysData %}
+                {% if group.items|length > 1 %}
+<div class="row">
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-11">
+                    <div class="spoiler-wrapper">
+                        <div class="spoiler folded">
+                            <a href="javascript:void(0);">
+                                <span class="key {% if group.error %}error{% endif %}">{{ group.common }}</span>
+                            </a>
+                            <span class="quantity">({{ group.items|length }})</span>
+                        </div>
+                        <div class="spoiler-text" style="width: 100%">
+                                {% for item in group.items %}
+                                        <div class="row">
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-default btn-xs edit-key"
+                                                        key="{{ item.key }}">Edit
+                                                </button>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <div class="spoiler-wrapper">
+                                                    <div class="spoiler folded">
+                                                        <a href="javascript:void(0);">
+                                                            <span class="key {% if item.error %}error{% endif %}">{{ item.key }}</span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="spoiler-text">
+                                                        <ul>
+                                                            {% for key, value in item.trans %}
+                                                                <li>
+                                                                    <span class="key">{{ key }}:</span><span
+                                                                            class="value">{{ value }}</span>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                {% endfor %}
+
+                        </div>
+                    </div>
+    </div>
+</div>
+                {% elseif group.items|length == 1 %}
+                <div class="row">
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-default btn-xs edit-key"
+                                key="{{ group.items[0].key }}">Edit
+                        </button>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="spoiler-wrapper">
+                            <div class="spoiler folded">
+                                <a href="javascript:void(0);"><span class="key">{{ group.items[0].key }}</span></a>
+                            </div>
+                            <div class="spoiler-text">
+                                <ul>
+                                    {% for key, value in group.items[0].trans %}
+                                        <li>
+                                            <span class="key">{{ key }}:</span><span class="value">{{ value }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+        {% endfor %}
+
+{% endblock %}

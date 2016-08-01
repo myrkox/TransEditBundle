@@ -1,0 +1,35 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+{% block pageHeader %}
+    All translation keys
+{% endblock %}
+{% block content %}
+    <p class="subsection">Existing languages:</p>
+    <ul>
+        {% for key, value in languages %}
+            <li><span class="key">{{ key }}:</span><span class="value">{{ value }}</span></li>
+        {% endfor %}
+    </ul>
+    <p class="subsection">Translations keys:</p>
+    <ul>
+        {% for localeKey, transKeys in translations %}
+            <li>
+                <div class="spoiler-wrapper">
+                    <div class="spoiler folded">
+                        <a href="javascript:void(0);">
+                            <span class="key">{{ localeKey }}</span>
+                        </a>
+                        <span class="quantity">({{ transKeys|length }})</span>
+                    </div>
+                    <div class="spoiler-text">
+                    <ol>
+                    {% for transKey, transValue in transKeys %}
+                        <li><span class="key">{{ transKey }}:</span><span class="value">{{ transValue }}</span></li>
+                    {% endfor %}
+                    </ol>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+{% block footer %}
+{% endblock %}

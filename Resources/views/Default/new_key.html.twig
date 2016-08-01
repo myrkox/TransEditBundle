@@ -1,0 +1,247 @@
+{% extends 'TransEditBundle::trans_base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link href="/bundles/transedit/css/typeahead.css" rel="stylesheet">
+
+    <style>
+        .inputBlock {
+            margin-top: 50px;
+            margin-bottom: 10px;
+            width: 100%; /* Or auto */
+            padding: 0 10px; /* To give a bit of padding on the left and right */
+            border: solid 1px #DDD !important;
+        }
+
+        .inputBlockTitle {
+            border-bottom: none;
+            padding: 0 10px 0 10px;
+        }
+
+        #operationStatus {
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        var transKeys = [];
+
+        var substringMatcher = function (strs) {
+            return function findMatches(q, cb) {
+                var matches, substrRegex;
+
+                matches = [];
+
+                substrRegex = new RegExp(q, 'i');
+
+                $.each(strs, function (i, str) {
+                    if (substrRegex.test(str)) {
+                        matches.push(str);
+                    }
+                });
+
+                cb(matches);
+            };
+        };
+
+        function keyProcessing() {
+            var key = $("#keySearchField").val();
+            var keyNeighborsElement = $("#keyNeighbors");
+
+            var neighbors = getKeyNeighbors(key);
+            var neighborsHtml = neighbors.join('</br>');
+
+            $(keyNeighborsElement).html(neighborsHtml);
+        }
+
+        function getKeyNeighbors(key) {
+            var keyParts = key.split('.');
+            var neighbors = [];
+            var searchedKey = '';
+            do {
+                searchedKey = keyParts.join('.');
+                neighbors = transKeys.filter(function (transKey) {
+                    return transKey.startsWith(searchedKey);
+                });
+                keyParts.pop();
+            } while (neighbors.length == 0 && keyParts.length > 0);
+            return neighbors;
+        }
+
+        function setMatcherData() {
+            $('#keySearchField').typeahead({
+                        hint: true,
+                        highlight: true,
+                        minLength: 1,
+                    },
+                    {
+                        name: 'transKeys',
+                        source: substringMatcher(transKeys)
+                    }).bind('typeahead:selected', function () {
+                        keyProcessing();
+                    });
+        }
+
+        function tryToFillInputBlock() {
+            var key = $("#keySearchField").val();
+            if ($.inArray(key, transKeys) >= 0) {
+
+                $.blockUI({
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    }
+                });
+
+                $.ajax({
+                    url: "{{ path('trans_edit_find_key_data_by_ajax') }}",
+                    cache: false,
+                    type: "POST",
+                    data: 'data=' + key,
+                    success: function (result) {
+                        if (result["status"] === true) {
+
+                            var keyData = result['keyData'];
+
+                            $(".inputLocaleValue").each(function () {
+                                if (keyData.hasOwnProperty($(this).attr('locale'))) {
+                                    $(this).val(keyData[$(this).attr('locale')]);
+                                }
+                            });
+                        }
+                        $.unblockUI();
+                    },
+                    error: function () {
+                        $.unblockUI();
+                    }
+                });
+
+            }
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "{{ path('trans_edit_get_all_keys_by_ajax') }}",
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    transKeys = data;
+                    setMatcherData();
+                }
+            });
+
+            $("#keySearchField")
+                    .bind('input paste', function () {
+                        keyProcessing();
+                    })
+                    .focusin(function () {
+                        $(".inputBlock").fadeTo("fast", 0.25);
+                    })
+                    .focusout(function () {
+                        $(".inputBlock").fadeTo("fast", 1);
+                        tryToFillInputBlock();
+                    })
+                    .focus();
+
+            $("#sendKeyData").click(function () {
+                var data = {};
+                var key = $("#keySearchField").val();
+                data["key"] = key;
+                $(".inputLocaleValue").each(function () {
+                    data[$(this).attr('locale')] = $(this).val();
+                });
+
+                $.ajax({
+                    url: "{{ path('trans_edit_save_key_data_by_ajax') }}",
+                    cache: false,
+                    type: "POST",
+                    data: 'data=' + JSON.stringify(data),
+                    success: function (result) {
+                        if (result["status"] === true) {
+                            transKeys.push(key);
+                            $("#operationStatus")
+                                    .addClass("alert alert-success")
+                                    .html("New data for translation key has been saved.")
+                                    .show("fast");
+                        } else {
+                            $("#operationStatus")
+                                    .addClass("alert alert-danger")
+                                    .html("An error occurred during saving data.")
+                                    .show("fast");
+                        }
+
+                        window.setTimeout(function () {
+                            $("#operationStatus").hide("fast", function () {
+                                $("#operationStatus").removeClass().html('');
+                            })
+                        }, 3000)
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}
+
+{% block pageHeader %}
+    New \ Edit key
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+
+            {% if key is not null %}
+                <input id="keySearchField" value="{{ key }}" type="text" class="typeahead form-control"
+                       placeholder="Search">
+            {% else %}
+                <input id="keySearchField" type="text" class="typeahead form-control" placeholder="Search">
+            {% endif %}
+
+            <fieldset class="inputBlock">
+                <legend class="inputBlockTitle">Values</legend>
+                {% for locale in localeKeys %}
+                    <div class="form-group">
+                        <label for="inputLocale{{ locale }}">{{ locale | capitalize }}</label>
+                        {% if keyData[locale] is defined %}
+                            <input type="text" class="form-control inputLocaleValue" id="inputLocale{{ locale }}"
+                                   value="{{ keyData[locale] }}"
+                                   locale="{{ locale }}"
+                                   placeholder="Enter value for {{ locale }}">
+                        {% else %}
+                            <input type="text" class="form-control inputLocaleValue" id="inputLocale{{ locale }}"
+                                   locale="{{ locale }}"
+                                   placeholder="Enter value for {{ locale }}">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </fieldset>
+            <button id="sendKeyData" class="btn btn-default">Send</button>
+        </div>
+        <div class="col-xs-6 col-md-4">
+            <p class="subsection">Similar keys</p>
+
+            <div id="keyNeighbors">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="operationStatus"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

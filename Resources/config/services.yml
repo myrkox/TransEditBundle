@@ -1,0 +1,23 @@
+services:
+    shas.file_manager:
+        class: %shas.file_manager.class%
+        arguments:
+            - @service_container
+            - "%translation_values_file%"
+
+    shas.translation_content_manager:
+        class: %shas.translation_content_manager.class%
+        arguments:
+            - @shas.file_manager
+
+    shas.translation_content_processing:
+        class: %shas.translation_content_processing.class%
+        arguments:
+            - @shas.translation_content_manager
+
+    shas.validator.is_locale_exists:
+        class: %shas.validator.is_locale_exists.class%
+        tags:
+            - { name: validator.constraint_validator, alias: shas.validator.is_locale_exists }
+        calls:
+          - [setTranslationContentProcessing, ["@shas.translation_content_processing"]]
