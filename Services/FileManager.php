@@ -18,13 +18,13 @@ class FileManager
 
     /**
      * @param ContainerInterface $container
-     * @param string $fileName
      */
-    public function __construct(
-        ContainerInterface $container, $fileName)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->currentFileName = $fileName;
+
+        $translationValuesFile = $container->getParameter('translation_values_file');
+        $this->currentFileName = $translationValuesFile['file_name'];
     }
 
     /**

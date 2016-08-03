@@ -20,6 +20,18 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('trans_edit');
 
+        $rootNode
+            ->children()
+                ->arrayNode('translation_values_file')
+                    ->children()
+                        ->scalarNode('file_name')
+                            ->defaultValue('translation.json')
+                            ->cannotBeEmpty()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
         return $treeBuilder;
     }
 }
