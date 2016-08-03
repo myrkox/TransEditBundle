@@ -1,5 +1,6 @@
   {
     "name": "shas/translations-editor",
+    "minimum-stability": "dev",
     "description": "Editing file with translations",
     "type": "symfony-bundle",
     "authors": [
