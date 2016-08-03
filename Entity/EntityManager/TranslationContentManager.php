@@ -7,7 +7,7 @@ use Shas\TransEditBundle\Services\FileManager;
 
 class TranslationContentManager
 {
-    /** @var  FileManager $fileManager */
+    /** @var FileManager $fileManager */
     private $fileManager;
 
     /**
@@ -74,5 +74,4 @@ class TranslationContentManager
 
         return $this->saveTranslationContentEntity($translationContent);
     }
-
 }

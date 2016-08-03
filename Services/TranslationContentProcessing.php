@@ -37,7 +37,7 @@ class TranslationContentProcessing
      */
     public function getTranslationContentStatus()
     {
-        if(empty($this->translationContent)){
+        if (empty($this->translationContent)) {
             return 1;
         }
 
@@ -50,8 +50,8 @@ class TranslationContentProcessing
     public function getStatistic()
     {
         return [
-            'languagesCount' => count($this->translationContent->getLanguagesData()),
-            'languagesInString' => implode(', ', array_values($this->translationContent->getLanguagesData())),
+            'languagesCount'     => count($this->translationContent->getLanguagesData()),
+            'languagesInString'  => implode(', ', array_values($this->translationContent->getLanguagesData())),
             'keysCountByLocales' => $this->getKeysCountByLocales()
         ];
     }
@@ -66,7 +66,7 @@ class TranslationContentProcessing
         }
 
         return [
-            'languages' => $this->translationContent->getLanguagesData(),
+            'languages'    => $this->translationContent->getLanguagesData(),
             'translations' => $this->translationContent->getTranslationData()
         ];
     }
@@ -193,6 +193,7 @@ class TranslationContentProcessing
                 $locales[$locale] = $languagesData[$languagePrefix . $locale];
             }
         }
+
         return $locales;
     }
 
@@ -252,7 +253,6 @@ class TranslationContentProcessing
         $allTransKeys = $this->mergeKeysFromAllLocales();
 
         if ($translationContent->setEmptyTransDataToLocale($localeKey, $allTransKeys)) {
-
             return $this->translationContentManager->saveTranslationContentEntity($translationContent);
         }
 
@@ -287,8 +287,8 @@ class TranslationContentProcessing
             if ($prevKey == '' || $commonPartsOfKeys === '') {
                 $group = [
                     'common' => '',
-                    'error' => false,
-                    'items' => []
+                    'error'  => false,
+                    'items'  => []
                 ];
                 $len = array_push($groups, $group);
                 $current = $len - 1;
@@ -300,7 +300,7 @@ class TranslationContentProcessing
 
             $transForKey = $this->getAllTransForKeyWithErrorMark($transKey);
             $groups[$current]['items'][] = [
-                'key' => $transKey,
+                'key'   => $transKey,
                 'trans' => $transForKey['transForKey'],
                 'error' => $transForKey['error']
             ];
@@ -317,6 +317,7 @@ class TranslationContentProcessing
     {
         if (strlen($prevKey) === 0) {
             $transKeyParts = explode('.', $transKey);
+
             return implode('.', array_splice($transKeyParts, $this->maxDeep));
         }
 
@@ -340,6 +341,7 @@ class TranslationContentProcessing
                 return implode('.', $transKeyParts);
             }
         }
+
         return '';
     }
 
@@ -359,9 +361,10 @@ class TranslationContentProcessing
                 $error = true;
             }
         }
+
         return [
             'transForKey' => $transForKey,
-            'error' => $error
+            'error'       => $error
         ];
     }
 
@@ -379,6 +382,7 @@ class TranslationContentProcessing
                 $transForKey[$locale] = null;
             }
         }
+
         return $transForKey;
     }
 
