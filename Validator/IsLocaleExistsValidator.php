@@ -21,6 +21,10 @@ class IsLocaleExistsValidator extends ConstraintValidator
         $this->translationContentProcessing = $translationContentProcessing;
     }
 
+    /**
+     * @param $value
+     * @param Constraint $constraint
+     */
     public function validate($value, Constraint $constraint)
     {
         if($this->translationContentProcessing->isLocaleExists($value)){
