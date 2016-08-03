@@ -51,27 +51,4 @@ class TranslationContentManager
 
         return $this->fileManager->saveCurrentFileContent($newData);
     }
-
-    /**
-     * @param string $localeCode
-     * @param string $localeName
-     * @return bool
-     */
-    public function addLocale($localeCode, $localeName)
-    {
-        if (empty($localeCode) || empty($localeName)) {
-            return false;
-        }
-
-        $translationContent = $this->getTranslationContentEntity();
-        if (empty($translationContent)) {
-            return false;
-        }
-
-        if (!$translationContent->addLocaleKey($localeCode, $localeName)) {
-            return false;
-        }
-
-        return $this->saveTranslationContentEntity($translationContent);
-    }
 }
