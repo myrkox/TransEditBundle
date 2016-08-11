@@ -51,10 +51,10 @@ class DefaultController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('locales', ChoiceType::class, [
-                'label' => 'Choose locales:',
+                'label'    => 'Choose locales:',
                 'multiple' => true,
                 'required' => true,
-                'choices' => $this->translationContentProcessing->getDefaultLocales()
+                'choices'  => $this->translationContentProcessing->getDefaultLocales()
             ])
             ->add('save', SubmitType::class, ['label' => 'Create file'])
             ->getForm();
@@ -91,12 +91,12 @@ class DefaultController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('localeKey', TextType::class, [
-                'label' => 'Enter locale\'s code:',
-                'required' => true,
+                'label'       => 'Enter locale\'s code:',
+                'required'    => true,
                 'constraints' => new IsLocaleExistsConstraint()
             ])
             ->add('localeName', TextType::class, [
-                'label' => 'Enter locale\'s name:',
+                'label'    => 'Enter locale\'s name:',
                 'required' => true
             ])
             ->add('save', SubmitType::class, ['label' => 'Add locale'])
@@ -141,14 +141,14 @@ class DefaultController extends Controller
 
         $form = $this->createFormBuilder()
             ->add('locale', ChoiceType::class, [
-                'label' => 'Choose locale:',
+                'label'    => 'Choose locale:',
                 'multiple' => false,
                 'required' => true,
                 'disabled' => count($locales) == 1 ? true : false,
-                'choices' => $locales
+                'choices'  => $locales
             ])
             ->add('save', SubmitType::class, [
-                    'label' => 'Delete locale',
+                    'label'    => 'Delete locale',
                     'disabled' => count($locales) == 1 ? true : false,
                 ]
             )
@@ -193,9 +193,9 @@ class DefaultController extends Controller
         return $this->render(
             'TransEditBundle:Default:all_keys.html.twig',
             [
-                'languages' => $allKeysData['languages'],
+                'languages'    => $allKeysData['languages'],
                 'translations' => $allKeysData['translations'],
-                'menuItem' => 'all_keys'
+                'menuItem'     => 'all_keys'
             ]
         );
     }
@@ -225,9 +225,9 @@ class DefaultController extends Controller
             'TransEditBundle:Default:new_key.html.twig',
             [
                 'localeKeys' => $this->translationContentProcessing->getLocaleKeys(),
-                'key' => $key,
-                'keyData' => $this->translationContentProcessing->findKeyData($key),
-                'menuItem' => 'new_key'
+                'key'        => $key,
+                'keyData'    => $this->translationContentProcessing->findKeyData($key),
+                'menuItem'   => 'new_key'
             ]
         );
 
@@ -247,7 +247,8 @@ class DefaultController extends Controller
             'TransEditBundle:Default:found_keys.html.twig',
             [
                 'foundKeys' => $foundKeys,
-                'menuItem' => 'found_keys'
+                'needle'    => $needle,
+                'menuItem'  => 'found_keys'
             ]
         );
 
@@ -301,7 +302,7 @@ class DefaultController extends Controller
 
         return new JsonResponse(
             [
-                'status' => true,
+                'status'  => true,
                 'keyData' => $this->translationContentProcessing->findKeyData($key)
             ]
         );

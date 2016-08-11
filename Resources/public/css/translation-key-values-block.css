@@ -1,0 +1,25 @@
+.edit-key {
+    margin-left: 5px;
+    margin-top: -3px;
+}
+
+.badge_not_active {
+    background-color: #bbb;
+}
+
+.badge_active {
+    background-color: #DC143C;
+}
+
+.contextMenuText {
+    margin-left: 10px;
+}
+
+.contextMenuItem {
+    margin-left: 10px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.dropdown-menu{
+    width: 200px;
+}

@@ -1,0 +1,39 @@
+<ul>
+    {% for key1, value1 in translations %}
+        <li>
+            <span class="key">{{ key1|capitalize }}:</span>
+            <span class="value" key="{{ transKey }}" locale="{{ key1 }}">{{ value1 }}</span>
+                <span class="dropdown">
+                    <a id="dLabel_{{ transKey }}" role="button" data-toggle="dropdown" href="#">
+                        <span class="badge badge_not_active">T</span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu"
+                        aria-labelledby="dLabel_{{ transKey }}">
+                        <li role="presentation">
+                            <span class="contextMenuText" role="menuitem" tabindex="-1">Get translation from:</span>
+                        </li>
+                        {% set locales = [] %}
+                        {% set localesString = '' %}
+                        {% for key2, value2 in translations %}
+                            {% if key1 != key2 %}
+                                <li role="presentation">
+                                    <span class="contextMenuItem" mode="getTranslation" key="{{ transKey }}" locale="{{ key2 }}" destination="{{ key1 }}" role="menuitem" tabindex="-1">
+                                        <b>&#129056&nbsp;&nbsp;{{ key2|capitalize }}</b>
+                                    </span>
+                                </li>
+                                {% set locales = locales|merge([key2]) %}
+                                {% set localesString = localesString ~ key2|capitalize ~ ' ' %}
+                            {% endif %}
+                        {% endfor %}
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation">
+                            <span class="contextMenuText">Give away translations:</span><br />
+                            <span class="contextMenuItem" mode="giveTranslations" key="{{ transKey }}" locale="{{ key1 }}" destination="{{ locales|join(',') }}" role="menuitem" tabindex="-1">
+                                <b>{{ localesString }}</b>
+                            </span>
+                        </li>
+                    </ul>
+                </span>
+        </li>
+    {% endfor %}
+</ul>

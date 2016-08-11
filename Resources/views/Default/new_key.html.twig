@@ -23,14 +23,27 @@
             margin-top: 50px;
             text-align: center;
         }
+
+        .badge {
+            font-size: xx-small;
+        }
+        .locale-controls {
+            margin-left: 30px;
+        }
+        .locale-controls a {
+            text-decoration: none;
+        }
     </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="/bundles/transedit/js/onlineTranslationModule.js"></script>
+
     <script type="text/javascript">
         var transKeys = [];
+        var originalKeyData = {};
 
         var substringMatcher = function (strs) {
             return function findMatches(q, cb) {
@@ -76,16 +89,16 @@
 
         function setMatcherData() {
             $('#keySearchField').typeahead({
-                        hint: true,
-                        highlight: true,
-                        minLength: 1,
-                    },
-                    {
-                        name: 'transKeys',
-                        source: substringMatcher(transKeys)
-                    }).bind('typeahead:selected', function () {
-                        keyProcessing();
-                    });
+                    hint: true,
+                    highlight: true,
+                    minLength: 1,
+                },
+                {
+                    name: 'transKeys',
+                    source: substringMatcher(transKeys)
+                }).bind('typeahead:selected', function () {
+                    keyProcessing();
+                });
         }
 
         function tryToFillInputBlock() {
@@ -115,8 +128,10 @@
                             var keyData = result['keyData'];
 
                             $(".inputLocaleValue").each(function () {
-                                if (keyData.hasOwnProperty($(this).attr('locale'))) {
-                                    $(this).val(keyData[$(this).attr('locale')]);
+                                var locale = $(this).attr('locale');
+                                if (keyData.hasOwnProperty(locale)) {
+                                    $(this).val(keyData[locale]);
+                                    originalKeyData[locale] = keyData[locale];
                                 }
                             });
                         }
@@ -130,7 +145,25 @@
             }
         }
 
+        var successTranslationCallback = function (text, sourceLocale, destinationLocale) {
+            $('.inputLocaleValue[locale="' + destinationLocale + '"]').val(text);
+        };
+
+        var errorTranslationCallback = function (text, lang) {
+            console.log('Error translation:');
+            console.log('Destination locale: ' + lang);
+            console.log('Text: ' + text);
+        };
+
+        var translationsDone = function () {
+            console.log("All translations are finished!");
+        };
+
         $(document).ready(function () {
+            $(".inputLocaleValue").each(function () {
+                originalKeyData[$(this).attr('locale')] = $(this).val();
+            });
+
             $.ajax({
                 url: "{{ path('trans_edit_get_all_keys_by_ajax') }}",
                 cache: false,
@@ -189,6 +222,39 @@
                     }
                 });
             });
+
+            $("#refreshKeyData").click(function () {
+                $(".inputLocaleValue").each(function () {
+                    var locale = $(this).attr('locale');
+                    if (originalKeyData.hasOwnProperty(locale)) {
+                        $(this).val(originalKeyData[locale]);
+                    }
+                });
+            });
+
+            $("#clearKeyData").click(function () {
+                $(".inputLocaleValue").each(function () {
+                    $(this).val('');
+                });
+            });
+
+            $('.getTranslation').click(function () {
+                var locale = $(this).attr('locale');
+                var destination = $(this).attr('destination');
+                var text = $('.inputLocaleValue[locale="'+locale+'"]').val();
+
+                singleTranslation(text, destination, successTranslationCallback, errorTranslationCallback);
+            });
+
+            $('.giveTranslations').click(function () {
+                var locale = $(this).attr('locale');
+                var destination = $(this).attr('destination');
+                var destinationLocales = destination.split(',');
+                var text = $('.inputLocaleValue[locale="'+locale+'"]').val();
+
+                multiTranslation(text, destinationLocales, successTranslationCallback, errorTranslationCallback, translationsDone);
+            });
+
         });
     </script>
 
@@ -213,7 +279,29 @@
                 <legend class="inputBlockTitle">Values</legend>
                 {% for locale in localeKeys %}
                     <div class="form-group">
-                        <label for="inputLocale{{ locale }}">{{ locale | capitalize }}</label>
+                        <label for="inputLocale{{ locale }}">
+                            {{ locale | capitalize }}
+
+                            {% set locales = [] %}
+                            {% set localesString = '' %}
+                            <span class="locale-controls">
+                                {% for locale2 in localeKeys %}
+                                    {% if locale2 != locale %}
+                                        <a role="button" href="#" class="getTranslation" locale="{{ locale2 }}" destination="{{ locale }}">
+                                            <span class="badge">{{ locale|capitalize }}&nbsp;&#129056&nbsp;{{ locale2|capitalize }}</span>
+                                        </a>
+                                        {% set locales = locales|merge([locale2]) %}
+                                        {% set localesString = localesString ~ locale2|capitalize ~ ' ' %}
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                            <span class="locale-controls">
+                                <a role="button" href="#" class="giveTranslations" locale="{{ locale }}" destination="{{ locales|join(',') }}">
+                                    <span class="badge">{{ locale|capitalize }}&nbsp;&#129058&nbsp;{{ localesString }}</span>
+                                </a>
+                            </span>
+
+                        </label>
                         {% if keyData[locale] is defined %}
                             <input type="text" class="form-control inputLocaleValue" id="inputLocale{{ locale }}"
                                    value="{{ keyData[locale] }}"
@@ -227,7 +315,15 @@
                     </div>
                 {% endfor %}
             </fieldset>
-            <button id="sendKeyData" class="btn btn-default">Send</button>
+            <div class="row">
+                <div class="col-md-2">
+                    <button id="sendKeyData" class="btn btn-default">Send</button>
+                </div>
+                <div class="col-md-10 text-right">
+                    <button id="refreshKeyData" class="btn btn-default">Refresh</button>
+                    <button id="clearKeyData" class="btn btn-default">Clear</button>
+                </div>
+            </div>
         </div>
         <div class="col-xs-6 col-md-4">
             <p class="subsection">Similar keys</p>

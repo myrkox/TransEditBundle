@@ -3,34 +3,46 @@
 {% block stylesheets %}
     {{ parent() }}
 
+    <link href="/bundles/transedit/css/translation-key-values-block.css" rel="stylesheet">
+
     <style>
-        .edit-key {
-            margin-left: 5px;
-            margin-top: -3px;
+        .needleBlock {
+            margin-bottom: 20px;
+        }
+
+        .needleBlock span{
+            font-size: medium;
+            font-weight: bold;
         }
     </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("button.edit-key").click(function (e) {
-                e.preventDefault();
-                var newKeyUrl = "{{ path('trans_edit_new_key') }}";
 
-                var key = $(this).attr('key');
-                window.location.replace(newKeyUrl + '/' + key);
-            });
-        })
+    <script src="/bundles/transedit/js/onlineTranslationModule.js"></script>
+
+    <script
+        id="keyValuesGroupFunctionality"
+        src="/bundles/transedit/js/keyValuesGroupFunctionality.js"
+        newKeyUrl = "{{ path('trans_edit_new_key') }}"
+        saveKeyDataByAjaxUrl = "{{ path('trans_edit_save_key_data_by_ajax') }}">
     </script>
 {% endblock %}
 
 {% block pageHeader %}
-    Found key
+    Found keys
 {% endblock %}
 
 {% block content %}
+    {% if needle != '' %}
+        <div class="row">
+            <div class="col-md-12 needleBlock">
+                <span>Result for "{{ needle }}":</span>
+            </div>
+        </div>
+    {% endif %}
+
     {% if foundKeys|length == 0 %}
         <div class="row">
             <div class="col-md-6">
@@ -53,13 +65,7 @@
                             <a href="javascript:void(0);"><span class="key">{{ key }}</span></a>
                         </div>
                         <div class="spoiler-text">
-                            <ul>
-                                {% for key, value in trans %}
-                                    <li>
-                                        <span class="key">{{ key }}:</span><span class="value">{{ value }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                            {% include 'TransEditBundle:Default:show_locale_translation_list.html.twig' with {'translations': trans, 'transKey': key} %}
                         </div>
                     </div>
                 </div>
